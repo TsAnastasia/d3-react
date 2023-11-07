@@ -11,6 +11,7 @@
     "format": "prettier --write \"./src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
   },
   "dependencies": {
+    "d3": "^7.8.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.18.0",
@@ -22,6 +23,7 @@
     "@babel/preset-react": "^7.22.15",
     "@babel/preset-typescript": "^7.23.2",
     "@teamsupercell/typings-for-css-modules-loader": "^2.5.2",
+    "@types/d3": "^7.4.2",
     "@types/dotenv-webpack": "^7.0.7",
     "@types/react": "^18.2.36",
     "@types/react-dom": "^18.2.14",

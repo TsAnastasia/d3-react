@@ -15,7 +15,12 @@
   color: var(--color-primary);
 }
 
-// Маленький текст (примечание, подвал)
+// Большой текст
+@mixin large {
+  @include _text(18px, 600);
+}
+
+// Средний текст
 @mixin medium {
   @include _text(14px, 400);
 }

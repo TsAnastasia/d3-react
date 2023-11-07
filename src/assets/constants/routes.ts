@@ -22,5 +22,5 @@ export const AppPages: {
   { key: "SCATTER", inprogress: true },
   { key: "HISTOGRAMM", inprogress: true },
   { key: "HEATMAP", inprogress: true },
-  { key: "NETWORK", inprogress: true },
+  { key: "NETWORK", name: "Network" },
 ];
