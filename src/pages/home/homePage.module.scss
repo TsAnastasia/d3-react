@@ -1,0 +1,36 @@
+@use "../../styles/mixin.scss";
+
+.list {
+  margin-left: 24px;
+}
+
+.item {
+  margin: 12px;
+}
+
+.disabled {
+  color: var(--color-disabled);
+}
+
+.link {
+  font-weight: 500;
+  text-decoration: underline;
+  color: var(--color-text);
+
+  @include mixin.transition;
+
+  &:hover {
+    color: var(--color-primary);
+  }
+
+  &.disabled {
+    cursor: auto;
+    color: var(--color-disabled);
+    text-decoration: none;
+  }
+}
+
+.description {
+  margin-top: 8px;
+  margin-left: 8px;
+}

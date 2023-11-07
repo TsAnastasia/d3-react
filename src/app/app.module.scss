@@ -1,8 +1,21 @@
-@use "./palette.scss";
+@use "../styles/palette.scss";
+@use "../styles/fonts.scss";
 
 .root {
   min-height: 100vh;
+  min-width: min-content;
   display: flex;
   flex-direction: column;
   background-color: var(--color-bg);
+}
+
+.main {
+  padding: 24px;
+  flex-grow: 1;
+
+  @include fonts.medium;
+
+  h1 {
+    @include fonts.title-page;
+  }
 }

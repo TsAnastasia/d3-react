@@ -1,3 +1,4 @@
+import { BrowserRouter } from "react-router-dom";
 import App from "./app/App";
 import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
 import "./index.scss";
@@ -10,6 +11,8 @@ const root = reactDom.createRoot(
 
 root.render(
   <ErrorBoundary>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </ErrorBoundary>
 );

@@ -1,0 +1,26 @@
+@mixin _text($size, $weight: 400) {
+  font: {
+    family: "Roboto", "Serif";
+    style: normal;
+    weight: $weight;
+    size: $size;
+  }
+  line-height: 120%;
+}
+
+// Заголовок страницы
+@mixin title-page {
+  margin-bottom: 12px;
+  @include _text(24px, 600);
+  color: var(--color-primary);
+}
+
+// Маленький текст (примечание, подвал)
+@mixin medium {
+  @include _text(14px, 400);
+}
+
+// Маленький текст (примечание, подвал)
+@mixin small {
+  @include _text(12px, 300);
+}

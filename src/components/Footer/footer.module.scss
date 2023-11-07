@@ -1,0 +1,8 @@
+@use "../../styles/fonts.scss";
+
+.root {
+  padding: 12px 24px;
+
+  @include fonts.small;
+  color: var(--color-disabled);
+}
