@@ -1,0 +1,51 @@
+.root {
+  width: 100%;
+  height: 100vh;
+
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+    linear-gradient(130.92deg, #282b33 10.59%, #2a2e35 74.77%, #04be80 102.55%),
+    linear-gradient(
+      194.19deg,
+      rgba(40, 43, 51, 0.5) -18.37%,
+      rgba(42, 46, 53, 0.5) 86.37%,
+      rgba(4, 190, 128, 0.5) 122.26%
+    );
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.text {
+  font-family: Open Sans;
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 48px;
+  letter-spacing: 0.15px;
+  color: #fff;
+}
+
+.btn {
+  margin-top: 42px;
+
+  width: 302px;
+  height: 48px;
+
+  font-family: Open Sans;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+  letter-spacing: 0em;
+  text-align: center;
+
+  background-color: #04be80;
+  color: #fff;
+
+  cursor: pointer;
+
+  transition: all 0.3s ease-in-out;
+
+  &:active:not(:disabled) {
+    box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.25);
+  }
+}
