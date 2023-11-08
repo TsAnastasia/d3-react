@@ -12,12 +12,12 @@ const markerColor = linkStroke;
 
 const nodeFill = "#fff"; // #fff transparent currentColor;
 const nodeStroke = "#000";
-const nodeStrokeWidth = 1.5;
+const nodeStrokeWidth = 1;
 const nodeStrokeOpacity = 1;
-const nodeRadius = 30;
+const nodeRadius = 20;
 const nodeFillSelected = "var(--color-primary)";
 
-const forceSimulationStrength = -1800;
+const forceSimulationStrength = -1200;
 
 const ForceNetwork: FC<{
   className?: string;
