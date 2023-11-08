@@ -1,4 +1,5 @@
 @use "../../styles/fonts.scss";
+@use "../../styles/mixin.scss";
 
 .subtitle {
   margin-bottom: 8px;
@@ -7,7 +8,12 @@
 
 .chart {
   margin-left: 12px;
-  width: 400px;
   height: 400px;
+  box-sizing: content-box;
   border: 1px solid var(--color-text);
+
+  circle {
+    @include mixin.transition(fill);
+    cursor: pointer;
+  }
 }
