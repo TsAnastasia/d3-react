@@ -1,5 +1,3 @@
-import { NodeIdType } from "../../force/types";
-
 export type NetworkNodeIdType = string;
 
 export interface INetworkNode {
@@ -11,8 +9,8 @@ export interface INetworkNode {
 }
 
 export interface INetworkLink {
-  source: NodeIdType | INetworkNode;
-  target: NodeIdType | INetworkNode;
+  source: NetworkNodeIdType | INetworkNode;
+  target: NetworkNodeIdType | INetworkNode;
 }
 
 export interface INetworkProps {

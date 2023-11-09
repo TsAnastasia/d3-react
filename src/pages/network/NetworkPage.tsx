@@ -4,12 +4,11 @@ import { ChangeEventHandler, useCallback, useState } from "react";
 
 import DATA1 from "./data/data1";
 import DATA2 from "./data/data2";
-import { INode } from "./force/types";
 import Network from "./network/Network";
 import { INetworkNode } from "./network/utils/types";
 
 const NetworkPage = () => {
-  const [node, setNode] = useState<INode>();
+  const [node, setNode] = useState<INetworkNode>();
   const [indexData, setIndexData] = useState<number>(0);
 
   const handleChangeData = useCallback<ChangeEventHandler<HTMLInputElement>>(
@@ -31,7 +30,7 @@ const NetworkPage = () => {
     ChangeEventHandler<HTMLInputElement>
   >((event) => setDraggable(event.target.checked), []);
 
-  const handleNodeClick = useCallback((node?: INode) => {
+  const handleNodeClick = useCallback((node?: INetworkNode) => {
     console.log("node click", node);
     setNode((n) => (n?.id === node?.id ? undefined : node));
   }, []);
