@@ -1,0 +1,26 @@
+export default {
+  nodes: [
+    { id: "algorithmic", group: 1 },
+    { id: "3+3", group: 1 },
+    { id: "Rolling 6", group: 1 },
+    { id: "model-based", group: 2 },
+    { id: "CRM", group: 2 },
+    { id: "MCP-Mod", group: 2 },
+    { id: "EWOC", group: 2 },
+    { id: "hybrid", group: 3 },
+    { id: "BOIN", group: 3 },
+    { id: "mTPI", group: 3 },
+  ],
+  links: [
+    { source: "3+3", target: "algorithmic", value: 5 },
+    { source: "Rolling 6", target: "algorithmic", value: 5 },
+    { source: "CRM", target: "model-based", value: 5 },
+    { source: "EWOC", target: "model-based", value: 5 },
+    { source: "MCP-Mod", target: "model-based", value: 5 },
+    { source: "BOIN", target: "hybrid", value: 5 },
+    { source: "mTPI", target: "hybrid", value: 5 },
+    { source: "algorithmic", target: "model-based", value: 0.25 },
+    { source: "algorithmic", target: "hybrid", value: 0.25 },
+    { source: "model-based", target: "hybrid", value: 0.25 },
+  ],
+};

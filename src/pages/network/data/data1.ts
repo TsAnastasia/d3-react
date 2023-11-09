@@ -1,6 +1,6 @@
-export const FORCE_DATA = {
+export default {
   nodes: [
-    { id: "1", name: "A", x: 50, y: 50 },
+    { id: "1", name: "A", x: 50, y: 50, r: 10 },
     { id: "2", name: "B" },
     { id: "3", name: "C" },
     { id: "4", name: "D" },

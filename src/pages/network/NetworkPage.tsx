@@ -3,7 +3,8 @@ import scss from "./networkPage.module.scss";
 // import BasicNetwork from "./basic/BasicNetwork";
 // import { BASIC_NETWORK_DATA } from "./basic/data";
 // import ForceNetwork from "./force/ForceNetwork";
-import { FORCE_DATA } from "./force/data";
+import DATA1 from "./data/data1";
+import DATA2 from "./data/data2";
 import { useCallback, useState } from "react";
 import { INode } from "./force/types";
 import Network from "./network/Network";
@@ -11,6 +12,12 @@ import { INetworkNode } from "./network/utils/types";
 
 const NetworkPage = () => {
   const [node, setNode] = useState<INode>();
+  const [indexData, setIndexData] = useState<0 | 1>(0);
+
+  const handleToggle = useCallback(() => {
+    setNode(undefined);
+    setIndexData((prev) => (prev === 0 ? 1 : 0));
+  }, []);
 
   const handleNodeClick = useCallback((node?: INode) => {
     console.log("node click", node);
@@ -36,6 +43,7 @@ const NetworkPage = () => {
       </section> */}
       <section>
         <h2 className={scss.subtitle}>Force Network</h2>
+        <input type="checkbox" checked={!!indexData} onChange={handleToggle} />
         {/* <ForceNetwork
           className={scss.chart}
           nodes={FORCE_DATA.nodes}
@@ -46,8 +54,10 @@ const NetworkPage = () => {
         <Network
           className={scss.chart}
           zoomed
-          data={FORCE_DATA}
-          options={{ nodeColor }}
+          data={indexData === 0 ? DATA1 : DATA2}
+          options={{
+            nodeColor,
+          }}
           onNodeClick={handleNodeClick}
         />
       </section>

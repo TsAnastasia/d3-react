@@ -169,6 +169,7 @@ const ForceNetwork: FC<{
       };
 
       return () => {
+        console.log("hello");
         nodeRef.current = undefined;
         resetZoom.current = undefined;
         d3.select(divContainer).remove();
