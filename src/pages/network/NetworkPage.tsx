@@ -11,7 +11,6 @@ import { INetworkNode } from "./network/utils/types";
 const NetworkPage = () => {
   const [node, setNode] = useState<INode>();
   const [indexData, setIndexData] = useState<number>(0);
-  const [zoomed, setZoomed] = useState<boolean>(true);
 
   const handleChangeData = useCallback<ChangeEventHandler<HTMLInputElement>>(
     (event) => {
@@ -21,12 +20,16 @@ const NetworkPage = () => {
     []
   );
 
+  const [zoomed, setZoomed] = useState<boolean>(true);
   const handleChangeZoomed = useCallback<ChangeEventHandler<HTMLInputElement>>(
-    (event) => {
-      setZoomed(event.target.checked);
-    },
+    (event) => setZoomed(event.target.checked),
     []
   );
+
+  const [draggable, setDraggable] = useState<boolean>(true);
+  const handleChangeDraggable = useCallback<
+    ChangeEventHandler<HTMLInputElement>
+  >((event) => setDraggable(event.target.checked), []);
 
   const handleNodeClick = useCallback((node?: INode) => {
     console.log("node click", node);
@@ -53,6 +56,14 @@ const NetworkPage = () => {
           />
         </label>
         <label>
+          <span>draggablea</span>
+          <input
+            type="checkbox"
+            checked={draggable}
+            onChange={handleChangeDraggable}
+          />
+        </label>
+        <label>
           <span>data</span>
           <input
             type="range"
@@ -65,6 +76,7 @@ const NetworkPage = () => {
         <Network
           className={scss.chart}
           zoomed={zoomed}
+          draggable={draggable}
           data={indexData === 0 ? DATA1 : DATA2}
           options={{
             nodeColor,

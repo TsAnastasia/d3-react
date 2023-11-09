@@ -19,7 +19,7 @@ export const simulation = ({
   linksData: INetworkLink[];
   nodes: NetworkNodeSelectionType;
   links: NetworkLinkSelectionType;
-}) =>
+}): d3.Simulation<INetworkNode, undefined> =>
   d3
     .forceSimulation<INetworkNode>(nodesData)
     .force(

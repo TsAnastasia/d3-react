@@ -36,6 +36,7 @@ const Network: FC<INetworkProps> = ({
   className,
   onNodeClick,
   zoomed = false,
+  draggable = false,
 
   options: {
     nodeColor = DEFAULT_NODE_COLOR,
@@ -52,7 +53,7 @@ const Network: FC<INetworkProps> = ({
 }) => {
   const ref = useRef<HTMLDivElement | null>(null);
   const resetZoom = useRef<() => void>();
-
+  const simalationRef = useRef<d3.Simulation<INetworkNode, undefined>>();
   const [svg, setSvg] = useState<NetworkSVGSelectionType>();
 
   useEffect(() => {
@@ -105,8 +106,12 @@ const Network: FC<INetworkProps> = ({
         classes: { node: "node" },
       });
 
-      // const simulation =
-      simulation({ linksData: linksD, nodesData: nodesD, links, nodes });
+      simalationRef.current = simulation({
+        linksData: linksD,
+        nodesData: nodesD,
+        links,
+        nodes,
+      });
 
       setSvg(svg);
 
@@ -190,6 +195,35 @@ const Network: FC<INetworkProps> = ({
       svg?.call(d3.zoom<SVGSVGElement, unknown>().on("zoom", null));
     };
   }, [svg, zoomed]);
+
+  // draggable
+  useEffect(() => {
+    if (svg && draggable) {
+      svg?.selectAll<SVGCircleElement, INetworkNode>("circle").call(
+        d3
+          .drag<SVGCircleElement, INetworkNode>()
+          .on("start", (event) => {
+            if (!event.active)
+              simalationRef.current?.alphaTarget(0.3).restart();
+            event.subject.fx = event.subject.x;
+            event.subject.fy = event.subject.y;
+          })
+          .on("drag", (event) => {
+            event.subject.fx = event.x;
+            event.subject.fy = event.y;
+          })
+          .on("end", (event) => {
+            if (!event.active) simalationRef.current?.alphaTarget(0);
+            event.subject.fx = null;
+            event.subject.fy = null;
+          })
+      );
+    }
+
+    return () => {
+      // TODO: delete drag event
+    };
+  }, [svg, draggable]);
 
   return (
     <div

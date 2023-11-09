@@ -24,6 +24,7 @@ export interface INetworkProps {
   className?: string;
   onNodeClick?: (node: INetworkNode | undefined) => void;
   zoomed?: boolean;
+  draggable?: boolean;
 
   options?: Partial<INetworkNodesOptions & INetworkLinksOptions>;
 }
