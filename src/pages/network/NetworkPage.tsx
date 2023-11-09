@@ -1,23 +1,32 @@
 import scss from "./networkPage.module.scss";
 
-// import BasicNetwork from "./basic/BasicNetwork";
-// import { BASIC_NETWORK_DATA } from "./basic/data";
-// import ForceNetwork from "./force/ForceNetwork";
+import { ChangeEventHandler, useCallback, useState } from "react";
+
 import DATA1 from "./data/data1";
 import DATA2 from "./data/data2";
-import { useCallback, useState } from "react";
 import { INode } from "./force/types";
 import Network from "./network/Network";
 import { INetworkNode } from "./network/utils/types";
 
 const NetworkPage = () => {
   const [node, setNode] = useState<INode>();
-  const [indexData, setIndexData] = useState<0 | 1>(0);
+  const [indexData, setIndexData] = useState<number>(0);
+  const [zoomed, setZoomed] = useState<boolean>(true);
 
-  const handleToggle = useCallback(() => {
-    setNode(undefined);
-    setIndexData((prev) => (prev === 0 ? 1 : 0));
-  }, []);
+  const handleChangeData = useCallback<ChangeEventHandler<HTMLInputElement>>(
+    (event) => {
+      setNode(undefined);
+      setIndexData(Number(event.target.value));
+    },
+    []
+  );
+
+  const handleChangeZoomed = useCallback<ChangeEventHandler<HTMLInputElement>>(
+    (event) => {
+      setZoomed(event.target.checked);
+    },
+    []
+  );
 
   const handleNodeClick = useCallback((node?: INode) => {
     console.log("node click", node);
@@ -33,27 +42,29 @@ const NetworkPage = () => {
   return (
     <>
       <h1>Network chart</h1>
-      {/* <section>
-        <h2 className={scss.subtitle}>Basic Network</h2>
-        <BasicNetwork
-          className={scss.chart}
-          nodes={BASIC_NETWORK_DATA.nodes}
-          links={BASIC_NETWORK_DATA.links}
-        />
-      </section> */}
       <section>
         <h2 className={scss.subtitle}>Force Network</h2>
-        <input type="checkbox" checked={!!indexData} onChange={handleToggle} />
-        {/* <ForceNetwork
-          className={scss.chart}
-          nodes={FORCE_DATA.nodes}
-          links={FORCE_DATA.links}
-          onNodeClick={handleNodeClick}
-          selectedNode={node}
-        /> */}
+        <label>
+          <span>zoomed</span>
+          <input
+            type="checkbox"
+            checked={zoomed}
+            onChange={handleChangeZoomed}
+          />
+        </label>
+        <label>
+          <span>data</span>
+          <input
+            type="range"
+            value={indexData}
+            min={0}
+            max={1}
+            onChange={handleChangeData}
+          />
+        </label>
         <Network
           className={scss.chart}
-          zoomed
+          zoomed={zoomed}
           data={indexData === 0 ? DATA1 : DATA2}
           options={{
             nodeColor,
