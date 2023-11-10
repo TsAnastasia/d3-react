@@ -9,6 +9,7 @@ import { cl } from "../../../assets/utils/libs/classNames";
 import {
   INetworkNode,
   INetworkProps,
+  NetworkNodeSelectionType,
   NetworkSVGSelectionType,
 } from "./utils/types";
 import { layoutNodes } from "./utils/layoutNodes";
@@ -29,6 +30,11 @@ const DEFAULT_NODE_COLOR = "var(--color-bg)";
 const DEFAULT_NODE_STROKE_COLOR = "var(--color-text)";
 const DEFAULT_NODE_STROKE_WIDTH = 1;
 const DEFAULT_NODE_RADIUS = 20;
+
+const selectNodes = (
+  svg: NetworkSVGSelectionType | undefined
+): NetworkNodeSelectionType | undefined =>
+  svg?.selectAll<SVGCircleElement, INetworkNode>("circle");
 
 const Network: FC<INetworkProps> = ({
   data,
@@ -123,11 +129,9 @@ const Network: FC<INetworkProps> = ({
 
   useEffect(() => {
     if (onNodeClick)
-      svg
-        ?.selectAll<SVGCircleElement, INetworkNode>("circle")
-        ?.on("click", (_, node) =>
-          onNodeClick(data.nodes.find((n) => n.id === node.id))
-        );
+      selectNodes(svg)?.on("click", (_, node) =>
+        onNodeClick(data.nodes.find((n) => n.id === node.id))
+      );
   }, [onNodeClick, data.nodes, svg]);
 
   // layout nodes
@@ -199,7 +203,7 @@ const Network: FC<INetworkProps> = ({
   // draggable
   useEffect(() => {
     if (svg && draggable) {
-      svg?.selectAll<SVGCircleElement, INetworkNode>("circle").call(
+      selectNodes(svg)?.call(
         d3
           .drag<SVGCircleElement, INetworkNode>()
           .on("start", (event) => {
@@ -221,7 +225,13 @@ const Network: FC<INetworkProps> = ({
     }
 
     return () => {
-      // TODO: delete drag event
+      selectNodes(svg)?.call(
+        d3
+          .drag<SVGCircleElement, INetworkNode>()
+          .on("start", null)
+          .on("drag", null)
+          .on("end", null)
+      );
     };
   }, [svg, draggable]);
 
