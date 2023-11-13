@@ -14,6 +14,7 @@ export const layoutNodes = ({
   );
 
   nodes
+    .select("circle")
     .attr("r", options.nodeRadius)
     .attr("fill", options.nodeColor)
     .attr("stroke", options.nodeStrokeColor)

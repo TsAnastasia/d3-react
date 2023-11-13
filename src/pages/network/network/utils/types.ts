@@ -61,7 +61,7 @@ export type NetworkSVGSelectionType = d3.Selection<
 >;
 
 export type NetworkNodeSelectionType = d3.Selection<
-  SVGCircleElement,
+  SVGGElement,
   INetworkNode,
   SVGGElement,
   unknown

@@ -36,5 +36,6 @@ export const simulation = ({
         .attr("x2", (l) => (typeof l.target === "object" && l.target.x) || 0)
         .attr("y2", (l) => (typeof l.target === "object" && l.target.y) || 0);
 
-      nodes.attr("cx", (n) => n.x || 0).attr("cy", (n) => n.y || 0);
+      nodes.attr("transform", (n) => `translate(${n.x},${n.y})`);
+      // attr("cx", (n) => n.x || 0).attr("cy", (n) => n.y || 0);
     });

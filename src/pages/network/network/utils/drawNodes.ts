@@ -8,12 +8,18 @@ export const drawNodes = ({
   nodesGroup: d3.Selection<SVGGElement, unknown, null, undefined>;
   nodesData: INetworkNode[];
   classes: Record<"node", string>;
-}): NetworkNodeSelectionType =>
-  nodesGroup
+}): NetworkNodeSelectionType => {
+  const nodes = nodesGroup
     .selectAll<SVGCircleElement, unknown>("circle")
     .data(nodesData)
-    .join("circle")
-    .attr("class", classes.node)
+    .join("g")
+    .attr("class", classes.node);
+
+  nodes
+    .append("circle")
     .attr("fill", "transparent")
     .attr("stroke", "transparent")
     .attr("stroke-width", 0);
+
+  return nodes;
+};

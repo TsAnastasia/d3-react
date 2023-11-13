@@ -19,6 +19,7 @@ import {
   NetworkNodeSelectionType,
   NetworkSVGSelectionType,
 } from "./utils/types";
+import { NETWORK_CLASSES } from "./utils/constants";
 
 // TODO
 const linkStroke = "#999";
@@ -28,7 +29,7 @@ const DEFAULT_NODE_RADIUS = 20;
 export const selectNodes = (
   svg: NetworkSVGSelectionType | undefined
 ): NetworkNodeSelectionType | undefined =>
-  svg?.selectAll<SVGCircleElement, INetworkNode>("circle");
+  svg?.selectAll<SVGGElement, INetworkNode>("." + NETWORK_CLASSES.NODE);
 
 const Network: FC<INetworkProps> = ({
   data,
@@ -98,15 +99,15 @@ const Network: FC<INetworkProps> = ({
       const container = svg.append("g");
 
       const links = drawLinks({
-        linksGroup: container.append("g").attr("class", "links"),
+        linksGroup: container.append("g").attr("class", NETWORK_CLASSES.LINKS),
         linksData: linksD,
-        classes: { link: "link" },
+        classes: { link: NETWORK_CLASSES.LINK },
       });
 
       const nodes = drawNodes({
-        nodesGroup: container.append("g").attr("class", "nodes"),
+        nodesGroup: container.append("g").attr("class", NETWORK_CLASSES.NODES),
         nodesData: nodesD,
-        classes: { node: "node" },
+        classes: { node: NETWORK_CLASSES.NODE },
       });
 
       simalationRef.current = simulation({
@@ -133,11 +134,11 @@ const Network: FC<INetworkProps> = ({
 
   // layout nodes
   useEffect(() => {
-    const nodesGroup = svg?.select<SVGGElement>(".nodes");
+    const nodesGroup = svg?.select<SVGGElement>("." + NETWORK_CLASSES.NODES);
     nodesGroup &&
       layoutNodes({
         nodesGroup,
-        classes: { node: "node" },
+        classes: { node: NETWORK_CLASSES.NODE },
         options: {
           nodeColor,
           nodeStrokeColor,
@@ -157,7 +158,7 @@ const Network: FC<INetworkProps> = ({
 
   // layout links
   useEffect(() => {
-    const linksGroup = svg?.select<SVGGElement>(".links");
+    const linksGroup = svg?.select<SVGGElement>("." + NETWORK_CLASSES.LINKS);
     linksGroup &&
       layoutLinks({
         linksGroup,
