@@ -1,7 +1,7 @@
 declare namespace NetworkPageModuleScssNamespace {
   export interface INetworkPageModuleScss {
     chart: string;
-    subtitle: string;
+    network: string;
   }
 }
 

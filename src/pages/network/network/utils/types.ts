@@ -14,10 +14,7 @@ export interface INetworkLink {
 }
 
 export interface INetworkProps {
-  data: {
-    nodes: INetworkNode[];
-    links: INetworkLink[];
-  };
+  data: INetworkData;
 
   className?: string;
   onNodeClick?: (node: INetworkNode | undefined) => void;
@@ -25,6 +22,11 @@ export interface INetworkProps {
   draggable?: boolean;
 
   options?: Partial<INetworkNodesOptions & INetworkLinksOptions>;
+}
+
+export interface INetworkData {
+  nodes: INetworkNode[];
+  links: INetworkLink[];
 }
 
 type GetValueByNode<T = string> = T | ((node: INetworkNode) => T);

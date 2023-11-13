@@ -1,16 +1,17 @@
 @use "../../styles/fonts.scss";
 @use "../../styles/mixin.scss";
 
-.subtitle {
-  margin-bottom: 8px;
-  @include fonts.large;
+.network {
+  display: flex;
+  gap: 12px;
 }
 
 .chart {
-  margin-left: 12px;
-  height: 400px;
+  min-height: 400px;
   box-sizing: content-box;
   border: 1px solid var(--color-text);
+
+  flex: 1;
 
   circle {
     @include mixin.transition(fill);
