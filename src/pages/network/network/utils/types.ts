@@ -21,7 +21,9 @@ export interface INetworkProps {
   zoomed?: boolean;
   draggable?: boolean;
 
-  options?: Partial<INetworkNodesOptions & INetworkLinksOptions>;
+  options?: Partial<
+    INetworkNodesOptions & INetworkLinksOptions & INetWorkZoomOptions
+  >;
 }
 
 export interface INetworkData {
@@ -44,6 +46,11 @@ export interface INetworkLinksOptions {
   linkWidth: GetValueByLink<number>; // >= 0
   linkOpacity: GetValueByLink<number> | undefined; // [0, 1]
   linkLinecap: GetValueByLink<"butt" | "round" | "square">; // > 0
+}
+
+export interface INetWorkZoomOptions {
+  zoomMin: number;
+  zoomMax: number;
 }
 
 export type NetworkSVGSelectionType = d3.Selection<

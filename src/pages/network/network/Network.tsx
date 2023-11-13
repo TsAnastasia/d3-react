@@ -1,36 +1,28 @@
 import scss from "./network.module.scss";
 
-import { FC, memo, useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
+import { FC, memo, useEffect, useRef, useState } from "react";
 
 import ZoomResetIcon from "../../../assets/icons/ZoomReset";
 import { cl } from "../../../assets/utils/libs/classNames";
 
+import { useNetworkDrag } from "./hooks/useDrag";
+import { useNetworkZoom } from "./hooks/useZoom";
+import { drawLinks } from "./utils/drawLinks";
+import { drawNodes } from "./utils/drawNodes";
+import { layoutLinks } from "./utils/layoutLinks";
+import { layoutNodes } from "./utils/layoutNodes";
+import { simulation } from "./utils/simulation";
 import {
   INetworkNode,
   INetworkProps,
   NetworkNodeSelectionType,
   NetworkSVGSelectionType,
 } from "./utils/types";
-import { layoutNodes } from "./utils/layoutNodes";
-import { drawNodes } from "./utils/drawNodes";
-import { drawLinks } from "./utils/drawLinks";
-import { simulation } from "./utils/simulation";
-import { layoutLinks } from "./utils/layoutLinks";
-import { useNetworkDrag } from "./hooks/useDrag";
-import { useNetworkZoom } from "./hooks/useZoom";
 
+// TODO
 const linkStroke = "#999";
-
-const DEFAULT_LINK_COLOR = "#999";
-const DEFAULT_LINK_WIDTH = 1.5;
-const DEFAULT_LINK_LINECAP = "round";
-
 const markerColor = linkStroke;
-
-const DEFAULT_NODE_COLOR = "var(--color-bg)";
-const DEFAULT_NODE_STROKE_COLOR = "var(--color-text)";
-const DEFAULT_NODE_STROKE_WIDTH = 1;
 const DEFAULT_NODE_RADIUS = 20;
 
 export const selectNodes = (
@@ -47,16 +39,19 @@ const Network: FC<INetworkProps> = ({
   draggable = false,
 
   options: {
-    nodeColor = DEFAULT_NODE_COLOR,
-    nodeStrokeColor = DEFAULT_NODE_STROKE_COLOR,
+    nodeColor = "var(--color-bg)",
+    nodeStrokeColor = "var(--color-text)",
     nodeStrokeOpacity,
-    nodeStrokeWidth = DEFAULT_NODE_STROKE_WIDTH,
+    nodeStrokeWidth = 1,
     nodeRadius = (n: INetworkNode) => n.r || DEFAULT_NODE_RADIUS,
 
-    linkColor = DEFAULT_LINK_COLOR,
-    linkWidth = DEFAULT_LINK_WIDTH,
+    linkColor = "var(--color-primary)",
+    linkWidth = 1.5,
     linkOpacity,
-    linkLinecap = DEFAULT_LINK_LINECAP,
+    linkLinecap = "round",
+
+    zoomMin = 0,
+    zoomMax = 10,
   } = {},
 }) => {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -175,7 +170,7 @@ const Network: FC<INetworkProps> = ({
       });
   }, [linkColor, linkLinecap, linkOpacity, linkWidth, svg]);
 
-  useNetworkZoom({ svg, zoomed, resetZoom });
+  useNetworkZoom({ svg, zoomed, resetZoom, options: { zoomMin, zoomMax } });
   useNetworkDrag({ svg, draggable, simalationRef });
 
   return (
