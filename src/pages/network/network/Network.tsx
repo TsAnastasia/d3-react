@@ -17,6 +17,8 @@ import { drawNodes } from "./utils/drawNodes";
 import { drawLinks } from "./utils/drawLinks";
 import { simulation } from "./utils/simulation";
 import { layoutLinks } from "./utils/layoutLinks";
+import { useNetworkDrag } from "./hooks/useDrag";
+import { useNetworkZoom } from "./hooks/useZoom";
 
 const linkStroke = "#999";
 
@@ -31,7 +33,7 @@ const DEFAULT_NODE_STROKE_COLOR = "var(--color-text)";
 const DEFAULT_NODE_STROKE_WIDTH = 1;
 const DEFAULT_NODE_RADIUS = 20;
 
-const selectNodes = (
+export const selectNodes = (
   svg: NetworkSVGSelectionType | undefined
 ): NetworkNodeSelectionType | undefined =>
   svg?.selectAll<SVGCircleElement, INetworkNode>("circle");
@@ -173,67 +175,8 @@ const Network: FC<INetworkProps> = ({
       });
   }, [linkColor, linkLinecap, linkOpacity, linkWidth, svg]);
 
-  // zoom
-  useEffect(() => {
-    if (svg && zoomed) {
-      const zoom = d3
-        .zoom<SVGSVGElement, unknown>()
-        .extent([
-          [-300, -300],
-          [300, 300],
-        ])
-        .scaleExtent([0.5, 8])
-        .on("zoom", ({ transform }) => {
-          svg?.select("g").attr("transform", transform);
-        });
-      svg?.call(zoom);
-      resetZoom.current = () => {
-        svg.transition().duration(750).call(zoom.transform, d3.zoomIdentity);
-      };
-    }
-
-    return () => {
-      if (resetZoom.current) resetZoom.current();
-      resetZoom.current = undefined;
-
-      svg?.call(d3.zoom<SVGSVGElement, unknown>().on("zoom", null));
-    };
-  }, [svg, zoomed]);
-
-  // draggable
-  useEffect(() => {
-    if (svg && draggable) {
-      selectNodes(svg)?.call(
-        d3
-          .drag<SVGCircleElement, INetworkNode>()
-          .on("start", (event) => {
-            if (!event.active)
-              simalationRef.current?.alphaTarget(0.3).restart();
-            event.subject.fx = event.subject.x;
-            event.subject.fy = event.subject.y;
-          })
-          .on("drag", (event) => {
-            event.subject.fx = event.x;
-            event.subject.fy = event.y;
-          })
-          .on("end", (event) => {
-            if (!event.active) simalationRef.current?.alphaTarget(0);
-            event.subject.fx = null;
-            event.subject.fy = null;
-          })
-      );
-    }
-
-    return () => {
-      selectNodes(svg)?.call(
-        d3
-          .drag<SVGCircleElement, INetworkNode>()
-          .on("start", null)
-          .on("drag", null)
-          .on("end", null)
-      );
-    };
-  }, [svg, draggable]);
+  useNetworkZoom({ svg, zoomed, resetZoom });
+  useNetworkDrag({ svg, draggable, simalationRef });
 
   return (
     <div

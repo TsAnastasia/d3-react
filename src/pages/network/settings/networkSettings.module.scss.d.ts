@@ -1,6 +1,7 @@
 declare namespace NetworkSettingsModuleScssNamespace {
   export interface INetworkSettingsModuleScss {
     boolean: string;
+    range: string;
     root: string;
     title: string;
   }

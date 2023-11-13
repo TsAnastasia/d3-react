@@ -26,12 +26,13 @@ const NetworkSettings: FC<INetworkSettings> = ({
           onChange={handleChangeDraggable}
         />
       </label>
-      <label>
+      <label className={scss.range}>
         <span>data</span>
         <input
           type="range"
+          defaultValue={0}
           min={0}
-          max={DATA_ARR.length}
+          max={DATA_ARR.length - 1}
           onChange={handleChangeData}
         />
       </label>
