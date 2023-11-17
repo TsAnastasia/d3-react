@@ -21,5 +21,12 @@ export const drawNodes = ({
     .attr("stroke", "transparent")
     .attr("stroke-width", 0);
 
+  nodes
+    .append("text")
+    .attr("x", 7)
+    .attr("y", "0.31em")
+    .attr("stroke", "black")
+    .text((n) => n.name || n.id);
+
   return nodes;
 };

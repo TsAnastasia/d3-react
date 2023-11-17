@@ -2,6 +2,7 @@ export type NetworkNodeIdType = string;
 
 export interface INetworkNode {
   id: NetworkNodeIdType;
+  name?: string;
   index?: number | undefined;
   x?: number;
   y?: number;
