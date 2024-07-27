@@ -1,0 +1,14 @@
+.section {
+  display: flex;
+  gap: 12px;
+  min-height: 500px;
+}
+
+.scheme {
+  flex: 1;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+}

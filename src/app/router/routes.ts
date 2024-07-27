@@ -5,9 +5,10 @@ export const AppRoutes = {
   HISTOGRAMM: "/histogramm",
   HEATMAP: "/heatmap",
   NETWORK: "/network",
+  SCHEME: "/scheme",
 };
 
-export const AppPages: {
+export const APP_PAGES: {
   key: keyof typeof AppRoutes;
   name?: string;
   inprogress?: boolean;
@@ -23,4 +24,5 @@ export const AppPages: {
   { key: "HISTOGRAMM", inprogress: true },
   { key: "HEATMAP", inprogress: true },
   { key: "NETWORK", name: "Network" },
+  { key: "SCHEME", name: "Scheme" },
 ];

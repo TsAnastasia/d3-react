@@ -2,7 +2,7 @@ import scss from "./header.module.scss";
 
 import { Link, NavLink } from "react-router-dom";
 
-import { AppPages, AppRoutes } from "../../assets/constants/routes";
+import { APP_PAGES, AppRoutes } from "../../app/router/routes";
 import { cl } from "../../assets/utils/libs/classNames";
 
 const Header = () => {
@@ -14,7 +14,7 @@ const Header = () => {
         </Link>
 
         <ul className={scss.list}>
-          {AppPages.map((page) => (
+          {APP_PAGES.map((page) => (
             <NavLink
               key={page.key}
               to={AppRoutes[page.key]}

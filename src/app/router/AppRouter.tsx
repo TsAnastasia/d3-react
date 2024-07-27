@@ -1,21 +1,23 @@
 import { lazy } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
-import { AppPages, AppRoutes } from "../../assets/constants/routes";
+import { APP_PAGES, AppRoutes } from "./routes";
 
 const HomePage = lazy(() => import("../../pages/home/HomePage"));
 const InprocessPage = lazy(() => import("../../pages/inprocess/InprocessPage"));
 
 const NetworkPage = lazy(() => import("../../pages/network/NetworkPage"));
+const SchemePage = lazy(() => import("../../pages/scheme/SchemePage"));
 
 const AppRouter = () => {
   return (
     <Routes>
       <Route path={AppRoutes.HOME} element={<HomePage />} />
       <Route path={AppRoutes.NETWORK} element={<NetworkPage />} />
+      <Route path={AppRoutes.SCHEME} element={<SchemePage />} />
 
       {/* in progress */}
-      {AppPages.filter((p) => p.inprogress).map((page) => (
+      {APP_PAGES.filter((p) => p.inprogress).map((page) => (
         <Route
           key={page.key}
           path={AppRoutes[page.key]}

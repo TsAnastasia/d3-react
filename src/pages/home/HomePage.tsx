@@ -3,7 +3,7 @@ import scss from "./homePage.module.scss";
 import { memo } from "react";
 import { Link } from "react-router-dom";
 
-import { AppPages, AppRoutes } from "../../assets/constants/routes";
+import { APP_PAGES, AppRoutes } from "../../app/router/routes";
 import { cl } from "../../assets/utils/libs/classNames";
 
 const HomePage = () => {
@@ -11,7 +11,7 @@ const HomePage = () => {
     <>
       <h1>D3 React components</h1>
       <ul className={scss.list}>
-        {AppPages.map((page) => (
+        {APP_PAGES.map((page) => (
           <li
             key={page.key}
             className={cl(scss.item, page.inprogress && scss.disabled)}

@@ -1,0 +1,33 @@
+.root {
+  border: 1px solid black;
+}
+
+.node {
+  stroke: #333;
+  stroke-width: 1.5px;
+  fill: #fff;
+
+  transition: fill 0.5s ease-in-out;
+
+  &.active {
+    fill: rgb(166, 234, 255);
+  }
+  rect {
+    rx: 4px;
+    ry: 4px;
+  }
+
+  text {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+
+    stroke-width: 0;
+    fill: #000;
+  }
+}
+
+.line {
+  stroke: green;
+  stroke-width: 4px;
+}
