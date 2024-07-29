@@ -7,7 +7,7 @@ export type SchemeSVGSelectionType = d3.Selection<
 
 export type SchemeEdgeSVGSelectionType = d3.Selection<
   SVGLineElement,
-  ISVGSchemeEdge,
+  ISchemeEdge,
   SVGGElement,
   unknown
 >;
@@ -20,6 +20,16 @@ export interface ISchemeNode {
   y: number;
 }
 
-export type ISchemeEdge = [string, string];
+export const SCHEME_EDGE_TYPES = ["1", "2", "3", "4"] as const;
 
-export type ISVGSchemeEdge = Record<"source" | "target", ISchemeNode>;
+export type SchemeEdgeType = (typeof SCHEME_EDGE_TYPES)[number];
+export type ISchemeDataEdge =
+  | [string, string, SchemeEdgeType]
+  | [string, string];
+
+export interface ISchemeEdge {
+  id: string;
+  source: ISchemeNode | undefined;
+  target: ISchemeNode | undefined;
+  type: SchemeEdgeType;
+}

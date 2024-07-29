@@ -1,12 +1,11 @@
 import scss from "./scheme.module.scss";
 
 import * as d3 from "d3";
-import { FC, memo, useEffect, useMemo, useRef } from "react";
+import { FC, memo, useEffect, useRef } from "react";
 
 import {
-  ISchemeEdge,
   ISchemeNode,
-  ISVGSchemeEdge,
+  ISchemeEdge,
   SchemeEdgeSVGSelectionType,
   // ISVGSchemeEdge,
   SchemeSVGSelectionType,
@@ -27,7 +26,7 @@ const Scheme: FC<{
 }> = ({
   id = "scheme",
   nodes: nodesData,
-  edges,
+  edges: edgesData,
   selected,
   selectNode,
   className,
@@ -37,17 +36,6 @@ const Scheme: FC<{
   const containerRef = useRef<SVGSVGElement>(null);
 
   const svgRef = useRef<SchemeSVGSelectionType>();
-
-  const edgesData = useMemo<ISVGSchemeEdge[]>(
-    () =>
-      edges
-        .map((e) => ({
-          source: nodesData.find((n) => n.id === e[0]),
-          target: nodesData.find((n) => n.id === e[1]),
-        }))
-        .filter((e): e is ISVGSchemeEdge => !!e.source && !!e.target),
-    [edges, nodesData]
-  );
 
   useEffect(() => {
     const divContainer = containerRef.current;
@@ -141,11 +129,11 @@ const Scheme: FC<{
         .drag<SVGGElement, ISchemeNode>()
         .on("start", (_, n) => {
           edgesSource = svgRef.current
-            ?.selectAll<SVGLineElement, ISVGSchemeEdge>("." + scss.line)
-            .filter((t) => t.source.id === n.id);
+            ?.selectAll<SVGLineElement, ISchemeEdge>("." + scss.line)
+            .filter((t) => t.source?.id === n.id);
           edgesTarget = svgRef.current
-            ?.selectAll<SVGLineElement, ISVGSchemeEdge>("." + scss.line)
-            .filter((t) => t.target.id === n.id);
+            ?.selectAll<SVGLineElement, ISchemeEdge>("." + scss.line)
+            .filter((t) => t.target?.id === n.id);
         })
         .on("drag", function dragged(event) {
           const x = event.x + event.dx;
@@ -177,16 +165,20 @@ const Scheme: FC<{
 
     edgesGroup
       .selectAll<SVGLineElement, unknown>("*")
-      .data(edgesData)
+      .data(edgesData.filter((e) => !!e.source && !!e.target))
       .join("line")
       .classed(scss.line, true)
-      .attr("x1", (e) => e.source.x + NODE_WIDTH)
-      .attr("x2", (e) => e.target.x)
-      .attr("y1", (e) => e.source.y + NODE_HEIGHT / 2)
-      .attr("y2", (e) => e.target.y + NODE_HEIGHT / 2)
+      .attr("x1", (e) => (e.source?.x || 0) + NODE_WIDTH)
+      .attr("x2", (e) => e.target?.x || 0)
+      .attr("y1", (e) => (e.source?.y || 0) + NODE_HEIGHT / 2)
+      .attr("y2", (e) => (e.target?.y || 0) + NODE_HEIGHT / 2)
       .attr("marker-start", `url(#${"marker-start" + id})`)
       .attr("marker-end", `url(#${"marker-end" + id})`);
     // .attr("marker-end",  "url(#arrow)")
+
+    return () => {
+      edgesGroup.remove();
+    };
   }, [edgesData, id]);
 
   useEffect(() => {
