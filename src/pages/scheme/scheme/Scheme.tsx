@@ -7,15 +7,14 @@ import {
   ISchemeNode,
   ISchemeEdge,
   SchemeEdgeSVGSelectionType,
-  // ISVGSchemeEdge,
   SchemeSVGSelectionType,
   SCHEME_EDGE_TYPES,
   SchemeEdgeType,
 } from "./utils/types";
 
-export const NODE_WIDTH = 160;
+export const NODE_WIDTH = 120;
 export const NODE_HEIGHT = 40;
-export const NODE_STEP_X = 120;
+export const NODE_STEP_X = 160;
 export const NODE_STEP_Y = 60;
 export const OFFFSET_X = 20;
 export const OFFFSET_Y = 100;
@@ -32,6 +31,22 @@ const getEdgeColor = (type: SchemeEdgeType): string | null => {
       return "var(--cl-edge-3)";
     case "4":
       return "var(--cl-edge-4)";
+
+    default:
+      return null;
+  }
+};
+
+const getEdgeStrokeDasharray = (type: SchemeEdgeType): string | null => {
+  switch (type) {
+    // case "1":
+    //   return "var(--cl-edge-1)";
+    // case "2":
+    //   return "var(--cl-edge-2)";
+    case "2":
+      return "10 2";
+    case "4":
+      return "2 4";
 
     default:
       return null;
@@ -76,16 +91,38 @@ const createMarkerStart = (
     .attr("r", 5)
     .attr("fill", color);
 
-const getPath = (
-  edge: Record<"source" | "target", Record<"x" | "y", number> | undefined>
-): string | null => {
-  return d3.line()([
-    [
-      (edge.source?.x || 0) + NODE_WIDTH,
-      (edge.source?.y || 0) + NODE_HEIGHT / 2,
-    ],
-    [edge.target?.x || 0, (edge.target?.y || 0) + NODE_HEIGHT / 2],
-  ]);
+type PointType = [number, number];
+const getPath = (edge: ISchemeEdge): string | null => {
+  const start: PointType = [
+    edge.source?.x || 0,
+    (edge.source?.y || 0) + NODE_HEIGHT / 2,
+  ];
+
+  const end: PointType = [
+    edge.target?.x || 0,
+    (edge.target?.y || 0) + NODE_HEIGHT / 2,
+  ];
+
+  if (start[0] <= end[0]) {
+    start[0] += NODE_WIDTH;
+  } else {
+    end[0] += NODE_WIDTH;
+  }
+
+  // [source, target]
+  const points: [number, number][] = [start, end];
+
+  const middle: PointType = [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2];
+
+  if (edge.type === "3")
+    points.splice(
+      1,
+      0,
+      [middle[0] + 5, middle[1] - 5],
+      [middle[0] - 5, middle[1] + 5]
+    );
+
+  return d3.line().curve(d3.curveCardinal)(points);
 };
 
 const Scheme: FC<{
@@ -178,6 +215,22 @@ const Scheme: FC<{
     let edgesSource: SchemeEdgeSVGSelectionType | undefined = undefined;
     let edgesTarget: SchemeEdgeSVGSelectionType | undefined = undefined;
 
+    const layout = (x: number, y: number, node: SVGGElement) => {
+      d3.select(node).attr("transform", "translate(" + [x, y] + ")");
+      edgesSource?.attr("d", (e) =>
+        getPath({
+          ...e,
+          source: e.source ? { ...e.source, x, y } : undefined,
+        })
+      );
+      edgesTarget?.attr("d", (e) =>
+        getPath({
+          ...e,
+          target: e.target ? { ...e.target, x, y } : undefined,
+        })
+      );
+    };
+
     nodes?.call(
       d3
         .drag<SVGGElement, ISchemeNode>()
@@ -190,16 +243,23 @@ const Scheme: FC<{
             .filter((t) => t.target?.id === n.id);
         })
         .on("drag", function dragged(event) {
-          const x = event.x + event.dx;
-          const y = event.y + event.dy;
-          d3.select(this).attr("transform", "translate(" + [x, y] + ")");
-
-          edgesSource?.attr("d", (e) => getPath({ ...e, source: { x, y } }));
-          edgesTarget?.attr("d", (e) => getPath({ ...e, target: { x, y } }));
+          layout(event.x + event.dx, event.y + event.dy, this);
         })
-        .on("end", (event, node) => {
-          node.x = event.x;
-          node.y = event.y;
+        .on("end", function dragend(event, node) {
+          const x =
+            Math.round((event.x - OFFFSET_X) / (NODE_WIDTH + NODE_STEP_X)) *
+              (NODE_WIDTH + NODE_STEP_X) +
+            OFFFSET_X;
+          const y =
+            Math.round((event.y - OFFFSET_Y) / (NODE_HEIGHT + NODE_STEP_Y)) *
+              (NODE_HEIGHT + NODE_STEP_Y) +
+            OFFFSET_Y;
+
+          node.x = x;
+          node.y = y;
+
+          layout(x, y, this);
+
           edgesTarget = undefined;
           edgesSource = undefined;
         })
@@ -220,7 +280,9 @@ const Scheme: FC<{
       .join("path")
       .classed(LINE_CLASS, true)
       .attr("stroke", (e) => getEdgeColor(e.type))
+      .attr("stroke-dasharray", (e) => getEdgeStrokeDasharray(e.type))
       .attr("stroke-width", 4)
+      .attr("fill", "none")
       .attr("d", getPath)
       .attr("marker-start", (e) => `url(#${"marker-start" + e.type + id})`)
       .attr("marker-end", (e) => `url(#${"marker-end" + e.type + id})`);
