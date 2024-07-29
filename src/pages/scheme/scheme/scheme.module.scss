@@ -1,5 +1,10 @@
 .root {
   border: 1px solid black;
+
+  --cl-edge-1: #70cc6f;
+  --cl-edge-2: #141414;
+  --cl-edge-3: #fd4346;
+  --cl-edge-4: #fab414;
 }
 
 .node {
@@ -8,6 +13,7 @@
   fill: #fff;
 
   transition: fill 0.5s ease-in-out;
+  cursor: pointer;
 
   &.active {
     fill: rgb(166, 234, 255);
@@ -25,9 +31,4 @@
     stroke-width: 0;
     fill: #000;
   }
-}
-
-.line {
-  stroke: green;
-  stroke-width: 4px;
 }

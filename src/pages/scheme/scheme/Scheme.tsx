@@ -9,10 +9,84 @@ import {
   SchemeEdgeSVGSelectionType,
   // ISVGSchemeEdge,
   SchemeSVGSelectionType,
+  SCHEME_EDGE_TYPES,
+  SchemeEdgeType,
 } from "./utils/types";
 
-const NODE_WIDTH = 200;
-const NODE_HEIGHT = 50;
+export const NODE_WIDTH = 160;
+export const NODE_HEIGHT = 40;
+export const NODE_STEP_X = 120;
+export const NODE_STEP_Y = 60;
+export const OFFFSET_X = 20;
+export const OFFFSET_Y = 100;
+
+const LINE_CLASS = "line";
+
+const getEdgeColor = (type: SchemeEdgeType): string | null => {
+  switch (type) {
+    case "1":
+      return "var(--cl-edge-1)";
+    case "2":
+      return "var(--cl-edge-2)";
+    case "3":
+      return "var(--cl-edge-3)";
+    case "4":
+      return "var(--cl-edge-4)";
+
+    default:
+      return null;
+  }
+};
+
+const createMarkerEnd = (
+  defs: d3.Selection<SVGDefsElement, unknown, null, undefined>,
+  id: string,
+  color: string | null
+) =>
+  defs
+    .append("marker")
+    .attr("id", id)
+    .attr("viewBox", "0 0 10 10")
+    .attr("refX", 8)
+    .attr("refY", 4)
+    .attr("marker-units", "userSpaceOnUse")
+    .attr("marke-width", 10)
+    .attr("marker-height", 10)
+    .attr("orient", "auto")
+    .append("path")
+    .attr("d", "M 0 0 L 10 5 L 0 10 z")
+    .attr("fill", color);
+
+const createMarkerStart = (
+  defs: d3.Selection<SVGDefsElement, unknown, null, undefined>,
+  id: string,
+  color: string | null
+) =>
+  defs
+    .append("marker")
+    .attr("id", id)
+    .attr("viewBox", "0 0 10 10")
+    .attr("refX", 5)
+    .attr("refY", 5)
+    .attr("marker-width", 60)
+    .attr("marker-height", 60)
+    .append("circle")
+    .attr("cx", 5)
+    .attr("cy", 5)
+    .attr("r", 5)
+    .attr("fill", color);
+
+const getPath = (
+  edge: Record<"source" | "target", Record<"x" | "y", number> | undefined>
+): string | null => {
+  return d3.line()([
+    [
+      (edge.source?.x || 0) + NODE_WIDTH,
+      (edge.source?.y || 0) + NODE_HEIGHT / 2,
+    ],
+    [edge.target?.x || 0, (edge.target?.y || 0) + NODE_HEIGHT / 2],
+  ]);
+};
 
 const Scheme: FC<{
   id?: string;
@@ -45,30 +119,10 @@ const Scheme: FC<{
 
       const defs = svgRef.current.append("defs");
 
-      defs
-        .append("marker")
-        .attr("id", "marker-end" + id)
-        .attr("viewBox", "0 0 10 10")
-        .attr("refX", 5)
-        .attr("refY", 5)
-        .attr("marke-width", 6)
-        .attr("marker-height", 6)
-        .attr("orient", "auto-start-reverse")
-        .append("path")
-        .attr("d", "M 0 0 L 10 5 L 0 10 z");
-
-      defs
-        .append("marker")
-        .attr("id", "marker-start" + id)
-        .attr("viewBox", "0 0 10 10")
-        .attr("refX", 5)
-        .attr("refY", 5)
-        .attr("marker-width", 60)
-        .attr("marker-height", 60)
-        .append("circle")
-        .attr("cx", 5)
-        .attr("cy", 5)
-        .attr("r", 5);
+      SCHEME_EDGE_TYPES.forEach((type) => {
+        createMarkerEnd(defs, "marker-end" + type + id, getEdgeColor(type));
+        createMarkerStart(defs, "marker-start" + type + id, getEdgeColor(type));
+      });
 
       svgRef.current?.append("g");
       return () => {
@@ -117,7 +171,7 @@ const Scheme: FC<{
     nodes
       .append("text")
       .text((n) => n?.name || n.id)
-      .attr("transform", "translate(10, 30)");
+      .attr("transform", "translate(10, 25)");
 
     nodes.on("click", (_, node) => selectNode(node));
 
@@ -129,10 +183,10 @@ const Scheme: FC<{
         .drag<SVGGElement, ISchemeNode>()
         .on("start", (_, n) => {
           edgesSource = svgRef.current
-            ?.selectAll<SVGLineElement, ISchemeEdge>("." + scss.line)
+            ?.selectAll<SVGPathElement, ISchemeEdge>("." + LINE_CLASS)
             .filter((t) => t.source?.id === n.id);
           edgesTarget = svgRef.current
-            ?.selectAll<SVGLineElement, ISchemeEdge>("." + scss.line)
+            ?.selectAll<SVGPathElement, ISchemeEdge>("." + LINE_CLASS)
             .filter((t) => t.target?.id === n.id);
         })
         .on("drag", function dragged(event) {
@@ -140,11 +194,8 @@ const Scheme: FC<{
           const y = event.y + event.dy;
           d3.select(this).attr("transform", "translate(" + [x, y] + ")");
 
-          edgesSource
-            ?.attr("x1", x + NODE_WIDTH)
-            .attr("y1", y + NODE_HEIGHT / 2);
-
-          edgesTarget?.attr("x2", x).attr("y2", y + NODE_HEIGHT / 2);
+          edgesSource?.attr("d", (e) => getPath({ ...e, source: { x, y } }));
+          edgesTarget?.attr("d", (e) => getPath({ ...e, target: { x, y } }));
         })
         .on("end", (event, node) => {
           node.x = event.x;
@@ -164,17 +215,15 @@ const Scheme: FC<{
     const edgesGroup = svgRef.current?.select("g").append("g");
 
     edgesGroup
-      .selectAll<SVGLineElement, unknown>("*")
+      .selectAll<SVGElement, unknown>("*")
       .data(edgesData.filter((e) => !!e.source && !!e.target))
-      .join("line")
-      .classed(scss.line, true)
-      .attr("x1", (e) => (e.source?.x || 0) + NODE_WIDTH)
-      .attr("x2", (e) => e.target?.x || 0)
-      .attr("y1", (e) => (e.source?.y || 0) + NODE_HEIGHT / 2)
-      .attr("y2", (e) => (e.target?.y || 0) + NODE_HEIGHT / 2)
-      .attr("marker-start", `url(#${"marker-start" + id})`)
-      .attr("marker-end", `url(#${"marker-end" + id})`);
-    // .attr("marker-end",  "url(#arrow)")
+      .join("path")
+      .classed(LINE_CLASS, true)
+      .attr("stroke", (e) => getEdgeColor(e.type))
+      .attr("stroke-width", 4)
+      .attr("d", getPath)
+      .attr("marker-start", (e) => `url(#${"marker-start" + e.type + id})`)
+      .attr("marker-end", (e) => `url(#${"marker-end" + e.type + id})`);
 
     return () => {
       edgesGroup.remove();

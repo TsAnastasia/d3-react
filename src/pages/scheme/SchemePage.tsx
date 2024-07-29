@@ -3,6 +3,7 @@ import scss from "./schemePage.module.scss";
 import { useCallback, useState } from "react";
 
 import SchemeEdges from "./edges/SchemeEdges";
+import { EDGES, NODES } from "./initialData";
 import Scheme from "./scheme/Scheme";
 import {
   ISchemeDataEdge,
@@ -10,14 +11,6 @@ import {
   ISchemeNode,
   SCHEME_EDGE_TYPES,
 } from "./scheme/utils/types";
-
-const NODES: ISchemeNode[] = [
-  { id: "001", x: 50, y: 140 },
-  { id: "002", x: 50, y: 260 },
-  { id: "003", x: 300, y: 160 },
-];
-
-const EDGES: ISchemeDataEdge[] = [["001", "003"]];
 
 const formatEdge = (
   edges: ISchemeDataEdge[],
@@ -46,6 +39,11 @@ const SchemePage = () => {
   const remove = useCallback(() => {
     // TODO: remove edges
     setNodes((prev) => prev.filter((n) => n.id !== selected?.id));
+    setEdges((prev) =>
+      prev.filter(
+        (e) => e.source?.id !== selected?.id && e.target?.id !== selected?.id
+      )
+    );
   }, [selected?.id]);
 
   const save = useCallback(() => {

@@ -6,7 +6,7 @@ export type SchemeSVGSelectionType = d3.Selection<
 >;
 
 export type SchemeEdgeSVGSelectionType = d3.Selection<
-  SVGLineElement,
+  SVGPathElement,
   ISchemeEdge,
   SVGGElement,
   unknown

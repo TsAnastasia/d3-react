@@ -1,7 +1,6 @@
 declare namespace SchemeModuleScssNamespace {
   export interface ISchemeModuleScss {
     active: string;
-    line: string;
     node: string;
     root: string;
   }
